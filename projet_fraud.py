@@ -159,7 +159,7 @@ resultats['Odd_Ratios']=np.exp(log.coef_).tolist()[0]
 # On choisit d'afficher les variables avec l'odd ratio le plus élevé et le plus faible
 resultats.loc[(resultats['Odd_Ratios']==max(resultats['Odd_Ratios']))|(resultats['Odd_Ratios']==min(resultats['Odd_Ratios']))]
 #print(resultats)
-
+'''
 #Decision Tree
 # Instanciation des modèles
 tree = DecisionTreeClassifier()
@@ -217,14 +217,14 @@ svm_eval =  evaluate_model(y_test, pred)
 # Matrice de confusion
 pd.crosstab(y_test, pred,rownames=['Classe réelle'], colnames=['Classe prédite'])
 
-'''
-modeles_accuracy = [log_eval['b'], tree_eval['b'], knc_eval['b'], svm_eval['b']]
-accuracy = pd.DataFrame({"Accuracy":modeles_accuracy,"Algorithmes":["Logistic regression","DecisionTree","KNC","SVM"]})
 
-g = sns.barplot("Accuracy","Algorithmes",data = accuracy,palette="Set3",orient = "h")
-g.set_xlabel("Balanced accuracy")
-g = g.set_title("Balanced Accuracy scores")
-'''
+#modeles_accuracy = [log_eval['b'], tree_eval['b'], knc_eval['b'], svm_eval['b']]
+#accuracy = pd.DataFrame({"Accuracy":modeles_accuracy,"Algorithmes":["Logistic regression","DecisionTree","KNC","SVM"]})
+
+#g = sns.barplot("Accuracy","Algorithmes",data = accuracy,palette="Set3",orient = "h")
+#g.set_xlabel("Balanced accuracy")
+#g = g.set_title("Balanced Accuracy scores")
+
 #----------------------------------------------Optimisation du modèle par ses hyperparamètres----------
 #----------------------------------------------KNN-----------------------------------------------------
 # liste des paramètres à optimiser.
@@ -277,3 +277,12 @@ log_eval =  evaluate_model(y_test, pred)
 #print('F1 Score:', log_eval['f1'])
 #print("Balanced accuracy:",log_eval['b'])
 confusion_matrix = pd.crosstab(y_test, y_pred, rownames=['Classe réelle'], colnames=['Classe prédite'])
+'''
+
+import joblib
+#joblib.dump(knn, "./knn.joblib")
+#joblib.dump(log, "./log.joblib")
+
+
+#joblib.load(knn, "./knn.joblib")
+#joblib.load(log, "./log.joblib")
