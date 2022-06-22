@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-from scipy.stats import chi2_contingency 
+#import seaborn as sns
+#import matplotlib.pyplot as plt
+#from scipy.stats import chi2_contingency 
 import warnings
-from scipy.stats import pearsonr
+#from scipy.stats import pearsonr
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
@@ -20,7 +20,7 @@ from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
-import statsmodels.api
+#import statsmodels.api
 warnings.filterwarnings('ignore')
 from sklearn.svm import LinearSVC
 #%matplotlib inline
@@ -197,7 +197,7 @@ knc_eval =  evaluate_model(y_test, pred)
 #print("Balanced accuracy:",knc_eval['b'])
 # Matrice de confusion
 pd.crosstab(y_test, pred,rownames=['Classe réelle'], colnames=['Classe prédite'])
-'''
+
 #SVM : Séparateur à vastes marges
 # Instanciation du modèle de SVC
 svm = LinearSVC(random_state=42)
@@ -287,4 +287,4 @@ import joblib
 #joblib.load(knn, "./knn.joblib")
 #joblib.load(log, "./log.joblib")
 
-
+'''
