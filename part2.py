@@ -21,8 +21,11 @@ api = FastAPI(
     {
         'name': 'Logistic Regression',
         
+    },
+    {
+        'name': 'Support vector machines',
+        
     }
-
 ])
 
 security = HTTPBasic()
@@ -70,6 +73,13 @@ def perfomances():
     return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.log_eval['acc'],
     fr.log_eval['prec'], fr.log_eval['rec'], fr.log_eval['f1'], fr.log_eval['b'])
 
+@api.get("/svm", tags=['Support vector machines'])
+def perfomances():
+    """Returns perfomances of the model support vector machines
+    """
+    return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.svm_eval['acc'],
+    fr.svm_eval['prec'], fr.svm_eval['rec'], fr.svm_eval['f1'], fr.svm_eval['b'])
+
 class FraudDetection(BaseModel):
     """
     Input features validation for the ML model
@@ -94,8 +104,8 @@ class FraudDetection(BaseModel):
     sex_F: int
     sex_M: int
 
-@api.post("/predict",tags=['Logistic Regression'])
-def predictions(fraud:FraudDetection):
+@api.post("/predict1",tags=['Logistic Regression'])
+def predictions1(fraud:FraudDetection):
     """
     :param:input data from the post request
     :return predicted type
@@ -122,6 +132,38 @@ def predictions(fraud:FraudDetection):
     fraud.sex_M
     ]]
     prediction = log.predict(features).tolist()[0]
+    return {
+        "prediction":prediction
+    }
+
+@api.post("/predict2",tags=['Support vector machines'])
+def predictions2(fraud:FraudDetection):
+    """
+    :param:input data from the post request
+    :return predicted type
+    """
+    features = [[
+    fraud.user_id,
+    fraud.signup_day,
+    fraud.signup_month,
+    fraud.signup_year,
+    fraud.purchase_day,
+    fraud.purchase_month,
+    fraud.purchase_year,
+    fraud.purchase_value,
+    fraud.age,
+    fraud.source_Ads,
+    fraud.source_Direct,
+    fraud.source_SEO,
+    fraud.browser_Chrome,
+    fraud.browser_FireFox,
+    fraud.browser_IE,
+    fraud.browser_Opera,
+    fraud.browser_Safari,
+    fraud.sex_F,
+    fraud.sex_M
+    ]]
+    prediction = fr.svm.predict(features).tolist()[0]
     return {
         "prediction":prediction
     }

@@ -197,7 +197,7 @@ knc_eval =  evaluate_model(y_test, pred)
 #print("Balanced accuracy:",knc_eval['b'])
 # Matrice de confusion
 pd.crosstab(y_test, pred,rownames=['Classe réelle'], colnames=['Classe prédite'])
-
+'''
 #SVM : Séparateur à vastes marges
 # Instanciation du modèle de SVC
 svm = LinearSVC(random_state=42)
@@ -217,7 +217,7 @@ svm_eval =  evaluate_model(y_test, pred)
 # Matrice de confusion
 pd.crosstab(y_test, pred,rownames=['Classe réelle'], colnames=['Classe prédite'])
 
-
+'''
 #modeles_accuracy = [log_eval['b'], tree_eval['b'], knc_eval['b'], svm_eval['b']]
 #accuracy = pd.DataFrame({"Accuracy":modeles_accuracy,"Algorithmes":["Logistic regression","DecisionTree","KNC","SVM"]})
 
