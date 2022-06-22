@@ -83,14 +83,14 @@ def perfomances():
 
 @api.get("/knc", tags=['K Nearest Neighbors Classifier'])
 def perfomances():
-    """Returns perfomances of the model support vector machines
+    """Returns perfomances of the model K Nearest Neighbors Classifier
     """
     return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.knc_eval['acc'],
     fr.knc_eval['prec'], fr.knc_eval['rec'], fr.knc_eval['f1'], fr.knc_eval['b'])
 
 @api.get("/tree", tags=['Decision tree'])
 def perfomances():
-    """Returns perfomances of the model support vector machines
+    """Returns perfomances of the model decision tree
     """
     return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.tree_eval['acc'],
     fr.tree_eval['prec'], fr.tree_eval['rec'], fr.tree_eval['f1'], fr.tree_eval['b'])
