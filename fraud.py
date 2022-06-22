@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-from scipy.stats import chi2_contingency 
+#import seaborn as sns
+#import matplotlib.pyplot as plt
+#from scipy.stats import chi2_contingency 
 import warnings
-from scipy.stats import pearsonr
+#from scipy.stats import pearsonr
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
@@ -20,7 +20,7 @@ from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
-import statsmodels.api
+#import statsmodels.api
 warnings.filterwarnings('ignore')
 from sklearn.svm import LinearSVC
 #%matplotlib inline
@@ -159,7 +159,7 @@ resultats['Odd_Ratios']=np.exp(log.coef_).tolist()[0]
 # On choisit d'afficher les variables avec l'odd ratio le plus élevé et le plus faible
 resultats.loc[(resultats['Odd_Ratios']==max(resultats['Odd_Ratios']))|(resultats['Odd_Ratios']==min(resultats['Odd_Ratios']))]
 #print(resultats)
-'''
+
 #Decision Tree
 # Instanciation des modèles
 tree = DecisionTreeClassifier()
@@ -197,7 +197,7 @@ knc_eval =  evaluate_model(y_test, pred)
 #print("Balanced accuracy:",knc_eval['b'])
 # Matrice de confusion
 pd.crosstab(y_test, pred,rownames=['Classe réelle'], colnames=['Classe prédite'])
-'''
+
 #SVM : Séparateur à vastes marges
 # Instanciation du modèle de SVC
 svm = LinearSVC(random_state=42)
@@ -279,7 +279,7 @@ log_eval =  evaluate_model(y_test, pred)
 confusion_matrix = pd.crosstab(y_test, y_pred, rownames=['Classe réelle'], colnames=['Classe prédite'])
 
 '''
-import joblib
+#import joblib
 #joblib.dump(knn, "./knn.joblib")
 #joblib.dump(log, "./log.joblib")
 

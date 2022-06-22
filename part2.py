@@ -210,7 +210,7 @@ def predictions2(fraud:FraudDetection):
     fraud.sex_F,
     fraud.sex_M
     ]]
-    prediction = fr.knc.predict(features).tolist()[0]
+    prediction = fr.knn.predict(features).tolist()[0]
     return {
         "prediction":prediction
     }
