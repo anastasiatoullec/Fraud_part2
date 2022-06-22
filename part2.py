@@ -3,7 +3,6 @@
 #uvicorn part2:api --reload
 #http://127.0.0.1:8000/docs ou http://localhost:8000/docs
 
-#import joblib,
 import uvicorn, requests
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -19,14 +18,10 @@ api = FastAPI(
         'name': 'Authorization',
         'description': 'In order to use this Api you need to login'
     },
-    {
-        'name': 'Logistic Regression',
-        
-    },
-    {
-        'name': 'Support vector machines',
-        
-    }
+    {   'name': 'Logistic Regression' },
+    {   'name': 'Support vector machines'},
+    {   'name': 'K Nearest Neighbors Classifier'},
+    {   'name': 'Decision tree'},
 ])
 
 security = HTTPBasic()
@@ -71,29 +66,46 @@ def current_user(username: str = Depends(get_current_user)):
 def perfomances():
     """Returns perfomances of the model Logistic Regression
     """
-    return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.log_eval['acc'],
-    fr.log_eval['prec'], fr.log_eval['rec'], fr.log_eval['f1'], fr.log_eval['b'])
+    return {"Accuracy, %": (fr.log_eval['acc']*100).round(2),
+           "Precision, %": (fr.log_eval['prec']*100).round(2),
+           "Recall, %": (fr.log_eval['rec']*100).round(2),
+           "F1 Score, %": (fr.log_eval['f1']*100).round(2),
+           "Balanced accuracy, %": (fr.log_eval['b']*100).round(2)
+        }
 
 @api.get("/svm", tags=['Support vector machines'])
 def perfomances():
     """Returns perfomances of the model support vector machines
     """
-    return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.svm_eval['acc'],
-    fr.svm_eval['prec'], fr.svm_eval['rec'], fr.svm_eval['f1'], fr.svm_eval['b'])
+    return {"Accuracy, %": (fr.svm_eval['acc']*100).round(2),
+           "Precision, %": (fr.svm_eval['prec']*100).round(2),
+           "Recall, %": (fr.svm_eval['rec']*100).round(2),
+           "F1 Score, %": (fr.svm_eval['f1']*100).round(2),
+           "Balanced accuracy, %": (fr.svm_eval['b']*100).round(2)
+        }
 
 @api.get("/knc", tags=['K Nearest Neighbors Classifier'])
 def perfomances():
     """Returns perfomances of the model K Nearest Neighbors Classifier
     """
-    return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.knc_eval['acc'],
-    fr.knc_eval['prec'], fr.knc_eval['rec'], fr.knc_eval['f1'], fr.knc_eval['b'])
+    return {"Accuracy, %": (fr.knc_eval['acc']*100).round(2),
+           "Precision, %": (fr.knc_eval['prec']*100).round(2),
+           "Recall, %": (fr.knc_eval['rec']*100).round(2),
+           "F1 Score, %": (fr.knc_eval['f1']*100).round(2),
+           "Balanced accuracy, %": (fr.knc_eval['b']*100).round(2)
+        }
 
 @api.get("/tree", tags=['Decision tree'])
 def perfomances():
-    """Returns perfomances of the model decision tree
+    """Returns perfomances of the model Decision tree
     """
-    return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.tree_eval['acc'],
-    fr.tree_eval['prec'], fr.tree_eval['rec'], fr.tree_eval['f1'], fr.tree_eval['b'])
+    return {"Accuracy, %": (fr.tree_eval['acc']*100).round(2),
+           "Precision, %": (fr.tree_eval['prec']*100).round(2),
+           "Recall, %": (fr.tree_eval['rec']*100).round(2),
+           "F1 Score, %": (fr.tree_eval['f1']*100).round(2),
+           "Balanced accuracy, %": (fr.tree_eval['b']*100).round(2)
+        }
+
 
 class FraudDetection(BaseModel):
     """
@@ -146,9 +158,10 @@ def predictions1(fraud:FraudDetection):
     fraud.sex_F,
     fraud.sex_M
     ]]
-    prediction = log.predict(features).tolist()[0]
+    prediction = fr.log.predict(features).tolist()[0]
     return {
-        "prediction":prediction
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
+        "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
     }
 
 @api.post("/predict2",tags=['Support vector machines'])
@@ -180,11 +193,12 @@ def predictions2(fraud:FraudDetection):
     ]]
     prediction = fr.svm.predict(features).tolist()[0]
     return {
-        "prediction":prediction
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
+        "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
     }
 
 @api.post("/predict3",tags=['K Nearest Neighbors Classifier'])
-def predictions2(fraud:FraudDetection):
+def predictions3(fraud:FraudDetection):
     """
     :param:input data from the post request
     :return predicted type
@@ -212,11 +226,12 @@ def predictions2(fraud:FraudDetection):
     ]]
     prediction = fr.knn.predict(features).tolist()[0]
     return {
-        "prediction":prediction
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
+        "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
     }
 
 @api.post("/predict4",tags=['Decision tree'])
-def predictions2(fraud:FraudDetection):
+def predictions4(fraud:FraudDetection):
     """
     :param:input data from the post request
     :return predicted type
@@ -244,5 +259,7 @@ def predictions2(fraud:FraudDetection):
     ]]
     prediction = fr.tree.predict(features).tolist()[0]
     return {
-        "prediction":prediction
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
+        "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
     }
+
