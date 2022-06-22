@@ -3,7 +3,8 @@
 #uvicorn part2:api --reload
 #http://127.0.0.1:8000/docs ou http://localhost:8000/docs
 
-import joblib, uvicorn, requests
+#import joblib,
+import uvicorn, requests
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from passlib.context import CryptContext
@@ -79,6 +80,20 @@ def perfomances():
     """
     return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.svm_eval['acc'],
     fr.svm_eval['prec'], fr.svm_eval['rec'], fr.svm_eval['f1'], fr.svm_eval['b'])
+
+@api.get("/knc", tags=['K Nearest Neighbors Classifier'])
+def perfomances():
+    """Returns perfomances of the model support vector machines
+    """
+    return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.knc_eval['acc'],
+    fr.knc_eval['prec'], fr.knc_eval['rec'], fr.knc_eval['f1'], fr.knc_eval['b'])
+
+@api.get("/tree", tags=['Decision tree'])
+def perfomances():
+    """Returns perfomances of the model support vector machines
+    """
+    return "Accuracy: {}\n Precision: {}\n Recall: {}\n F1 Score: {}\n Balanced accuracy: {}".format(fr.tree_eval['acc'],
+    fr.tree_eval['prec'], fr.tree_eval['rec'], fr.tree_eval['f1'], fr.tree_eval['b'])
 
 class FraudDetection(BaseModel):
     """
@@ -164,6 +179,70 @@ def predictions2(fraud:FraudDetection):
     fraud.sex_M
     ]]
     prediction = fr.svm.predict(features).tolist()[0]
+    return {
+        "prediction":prediction
+    }
+
+@api.post("/predict3",tags=['K Nearest Neighbors Classifier'])
+def predictions2(fraud:FraudDetection):
+    """
+    :param:input data from the post request
+    :return predicted type
+    """
+    features = [[
+    fraud.user_id,
+    fraud.signup_day,
+    fraud.signup_month,
+    fraud.signup_year,
+    fraud.purchase_day,
+    fraud.purchase_month,
+    fraud.purchase_year,
+    fraud.purchase_value,
+    fraud.age,
+    fraud.source_Ads,
+    fraud.source_Direct,
+    fraud.source_SEO,
+    fraud.browser_Chrome,
+    fraud.browser_FireFox,
+    fraud.browser_IE,
+    fraud.browser_Opera,
+    fraud.browser_Safari,
+    fraud.sex_F,
+    fraud.sex_M
+    ]]
+    prediction = fr.knc.predict(features).tolist()[0]
+    return {
+        "prediction":prediction
+    }
+
+@api.post("/predict4",tags=['Decision tree'])
+def predictions2(fraud:FraudDetection):
+    """
+    :param:input data from the post request
+    :return predicted type
+    """
+    features = [[
+    fraud.user_id,
+    fraud.signup_day,
+    fraud.signup_month,
+    fraud.signup_year,
+    fraud.purchase_day,
+    fraud.purchase_month,
+    fraud.purchase_year,
+    fraud.purchase_value,
+    fraud.age,
+    fraud.source_Ads,
+    fraud.source_Direct,
+    fraud.source_SEO,
+    fraud.browser_Chrome,
+    fraud.browser_FireFox,
+    fraud.browser_IE,
+    fraud.browser_Opera,
+    fraud.browser_Safari,
+    fraud.sex_F,
+    fraud.sex_M
+    ]]
+    prediction = fr.tree.predict(features).tolist()[0]
     return {
         "prediction":prediction
     }
