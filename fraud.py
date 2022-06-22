@@ -159,7 +159,7 @@ resultats['Odd_Ratios']=np.exp(log.coef_).tolist()[0]
 # On choisit d'afficher les variables avec l'odd ratio le plus élevé et le plus faible
 resultats.loc[(resultats['Odd_Ratios']==max(resultats['Odd_Ratios']))|(resultats['Odd_Ratios']==min(resultats['Odd_Ratios']))]
 #print(resultats)
-'''
+
 #Decision Tree
 # Instanciation des modèles
 tree = DecisionTreeClassifier()
@@ -279,7 +279,7 @@ log_eval =  evaluate_model(y_test, pred)
 confusion_matrix = pd.crosstab(y_test, y_pred, rownames=['Classe réelle'], colnames=['Classe prédite'])
 
 '''
-import joblib
+#import joblib
 #joblib.dump(knn, "./knn.joblib")
 #joblib.dump(log, "./log.joblib")
 
@@ -287,4 +287,4 @@ import joblib
 #joblib.load(knn, "./knn.joblib")
 #joblib.load(log, "./log.joblib")
 
-'''
+
