@@ -1,6 +1,6 @@
 #pip3 install fastapi uvicorn
 #pip install passlib[bcrypt]
-#uvicorn part2:api --reload
+#uvicorn api:api --reload
 #http://127.0.0.1:8000/docs ou http://localhost:8000/docs
 
 import uvicorn, requests
@@ -8,7 +8,7 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from passlib.context import CryptContext
 from pydantic import BaseModel
-import ml_models.fraud as fr
+import fraud as fr
 import joblib
 
 
@@ -185,8 +185,7 @@ def predictions1(fraud:FraudDetection):
     loaded_lr = joblib.load('sav/knn_model.sav')
     prediction = loaded_lr.predict(features).tolist()[0]
     return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
-        #"Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction
     }
 
 
@@ -220,8 +219,7 @@ def predictions2(fraud:FraudDetection):
     loaded_svm = joblib.load('sav/svm_model.sav')
     prediction = loaded_svm.predict(features).tolist()[0]
     return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
-       # "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction
     }
 
 
@@ -255,8 +253,7 @@ def predictions4(fraud:FraudDetection):
     loaded_tree = joblib.load('sav/tree_model.sav')
     prediction = loaded_tree.predict(features).tolist()[0]
     return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
-        #"Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction
     }
 
 
@@ -291,8 +288,7 @@ def predictions3(fraud:FraudDetection):
     loaded_knn = joblib.load('sav/knn_model.sav')
     prediction = loaded_knn.predict(features).tolist()[0]
     return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
-        #"Expected transaction(1 - fraud, 0 - not fraud)":y_test
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction
     }
 
 
