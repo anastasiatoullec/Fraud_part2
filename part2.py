@@ -8,7 +8,9 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from passlib.context import CryptContext
 from pydantic import BaseModel
-import fraud as fr
+import ml_models.fraud as fr
+import joblib
+
 
 api = FastAPI(
     title="Fraud detection API",
@@ -66,46 +68,66 @@ def current_user(username: str = Depends(get_current_user)):
 def perfomances():
     """Returns perfomances of the model Logistic Regression
     """
-    return {"Accuracy, %": (fr.log_eval['acc']*100).round(2),
-           "Precision, %": (fr.log_eval['prec']*100).round(2),
-           "Recall, %": (fr.log_eval['rec']*100).round(2),
-           "F1 Score, %": (fr.log_eval['f1']*100).round(2),
-           "Balanced accuracy, %": (fr.log_eval['b']*100).round(2)
+    loaded_lr= joblib.load('sav/lr_model.sav')
+    X_train, y_train, X_test, y_test= fr.preparing_data()
+    pred = loaded_lr.predict(X_test)
+    log_eval =  fr.evaluate_model(y_test, pred)
+    return {"Accuracy, %": (log_eval['acc']*100).round(2),
+           "Precision, %": (log_eval['prec']*100).round(2),
+           "Recall, %": (log_eval['rec']*100).round(2),
+           "F1 Score, %": (log_eval['f1']*100).round(2),
+           "Balanced accuracy, %": (log_eval['b']*100).round(2)
         }
 
 @api.get("/svm", tags=['Support vector machines'])
 def perfomances():
     """Returns perfomances of the model support vector machines
     """
-    return {"Accuracy, %": (fr.svm_eval['acc']*100).round(2),
-           "Precision, %": (fr.svm_eval['prec']*100).round(2),
-           "Recall, %": (fr.svm_eval['rec']*100).round(2),
-           "F1 Score, %": (fr.svm_eval['f1']*100).round(2),
-           "Balanced accuracy, %": (fr.svm_eval['b']*100).round(2)
+    loaded_svm= joblib.load('sav/svm_model.sav')
+    X_train, y_train, X_test, y_test= fr.preparing_data()
+    pred = loaded_svm.predict(X_test)
+    svm_eval =  fr.evaluate_model(y_test, pred)
+    return {"Accuracy, %": (svm_eval['acc']*100).round(2),
+           "Precision, %": (svm_eval['prec']*100).round(2),
+           "Recall, %": (svm_eval['rec']*100).round(2),
+           "F1 Score, %": (svm_eval['f1']*100).round(2),
+           "Balanced accuracy, %": (svm_eval['b']*100).round(2)
         }
 
-@api.get("/knc", tags=['K Nearest Neighbors Classifier'])
-def perfomances():
-    """Returns perfomances of the model K Nearest Neighbors Classifier
-    """
-    return {"Accuracy, %": (fr.knc_eval['acc']*100).round(2),
-           "Precision, %": (fr.knc_eval['prec']*100).round(2),
-           "Recall, %": (fr.knc_eval['rec']*100).round(2),
-           "F1 Score, %": (fr.knc_eval['f1']*100).round(2),
-           "Balanced accuracy, %": (fr.knc_eval['b']*100).round(2)
-        }
+
 
 @api.get("/tree", tags=['Decision tree'])
 def perfomances():
     """Returns perfomances of the model Decision tree
     """
-    return {"Accuracy, %": (fr.tree_eval['acc']*100).round(2),
-           "Precision, %": (fr.tree_eval['prec']*100).round(2),
-           "Recall, %": (fr.tree_eval['rec']*100).round(2),
-           "F1 Score, %": (fr.tree_eval['f1']*100).round(2),
-           "Balanced accuracy, %": (fr.tree_eval['b']*100).round(2)
+    loaded_tree = joblib.load('sav/tree_model.sav')
+    X_train, y_train, X_test, y_test= fr.preparing_data()
+    pred = loaded_tree.predict(X_test)
+    tree_eval =  fr.evaluate_model(y_test, pred)
+    return {"Accuracy, %": (tree_eval['acc']*100).round(2),
+           "Precision, %": (tree_eval['prec']*100).round(2),
+           "Recall, %": (tree_eval['rec']*100).round(2),
+           "F1 Score, %": (tree_eval['f1']*100).round(2),
+           "Balanced accuracy, %": (tree_eval['b']*100).round(2)
         }
 
+
+@api.get("/knc", tags=['K Nearest Neighbors Classifier'])
+def perfomances():
+    """Returns perfomances of the model K Nearest Neighbors Classifier
+    """
+
+    loaded_knn = joblib.load('sav/knn_model.sav')
+    X_train, y_train, X_test, y_test= fr.preparing_data()
+    pred = loaded_knn.predict(X_test)
+    knc_eval =  fr.evaluate_model(y_test, pred)
+
+    return {"Accuracy, %": (knc_eval['acc']*100).round(2),
+           "Precision, %": (knc_eval['prec']*100).round(2),
+           "Recall, %": (knc_eval['rec']*100).round(2),
+           "F1 Score, %": (knc_eval['f1']*100).round(2),
+           "Balanced accuracy, %": (knc_eval['b']*100).round(2)
+        }
 
 class FraudDetection(BaseModel):
     """
@@ -130,6 +152,8 @@ class FraudDetection(BaseModel):
     browser_Safari: int
     sex_F: int
     sex_M: int
+
+
 
 @api.post("/predict1",tags=['Logistic Regression'])
 def predictions1(fraud:FraudDetection):
@@ -158,11 +182,13 @@ def predictions1(fraud:FraudDetection):
     fraud.sex_F,
     fraud.sex_M
     ]]
-    prediction = fr.log.predict(features).tolist()[0]
+    loaded_lr = joblib.load('sav/knn_model.sav')
+    prediction = loaded_lr.predict(features).tolist()[0]
     return {
         "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
-        "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
+        #"Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
     }
+
 
 @api.post("/predict2",tags=['Support vector machines'])
 def predictions2(fraud:FraudDetection):
@@ -191,44 +217,13 @@ def predictions2(fraud:FraudDetection):
     fraud.sex_F,
     fraud.sex_M
     ]]
-    prediction = fr.svm.predict(features).tolist()[0]
+    loaded_svm = joblib.load('sav/svm_model.sav')
+    prediction = loaded_svm.predict(features).tolist()[0]
     return {
         "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
-        "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
+       # "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
     }
 
-@api.post("/predict3",tags=['K Nearest Neighbors Classifier'])
-def predictions3(fraud:FraudDetection):
-    """
-    :param:input data from the post request
-    :return predicted type
-    """
-    features = [[
-    fraud.user_id,
-    fraud.signup_day,
-    fraud.signup_month,
-    fraud.signup_year,
-    fraud.purchase_day,
-    fraud.purchase_month,
-    fraud.purchase_year,
-    fraud.purchase_value,
-    fraud.age,
-    fraud.source_Ads,
-    fraud.source_Direct,
-    fraud.source_SEO,
-    fraud.browser_Chrome,
-    fraud.browser_FireFox,
-    fraud.browser_IE,
-    fraud.browser_Opera,
-    fraud.browser_Safari,
-    fraud.sex_F,
-    fraud.sex_M
-    ]]
-    prediction = fr.knn.predict(features).tolist()[0]
-    return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
-        "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
-    }
 
 @api.post("/predict4",tags=['Decision tree'])
 def predictions4(fraud:FraudDetection):
@@ -257,9 +252,48 @@ def predictions4(fraud:FraudDetection):
     fraud.sex_F,
     fraud.sex_M
     ]]
-    prediction = fr.tree.predict(features).tolist()[0]
+    loaded_tree = joblib.load('sav/tree_model.sav')
+    prediction = loaded_tree.predict(features).tolist()[0]
     return {
         "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
-        "Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
+        #"Expected transaction(1 - fraud, 0 - not fraud)":fr.y_test[0]
     }
+
+
+
+@api.post("/predict3",tags=['K Nearest Neighbors Classifier'])
+def predictions3(fraud:FraudDetection):
+    """
+    :param:input data from the post request
+    :return predicted type
+    """
+    features = [[
+    fraud.user_id,
+    fraud.signup_day,
+    fraud.signup_month,
+    fraud.signup_year,
+    fraud.purchase_day,
+    fraud.purchase_month,
+    fraud.purchase_year,
+    fraud.purchase_value,
+    fraud.age,
+    fraud.source_Ads,
+    fraud.source_Direct,
+    fraud.source_SEO,
+    fraud.browser_Chrome,
+    fraud.browser_FireFox,
+    fraud.browser_IE,
+    fraud.browser_Opera,
+    fraud.browser_Safari,
+    fraud.sex_F,
+    fraud.sex_M
+    ]]
+    loaded_knn = joblib.load('sav/knn_model.sav')
+    prediction = loaded_knn.predict(features).tolist()[0]
+    return {
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction,
+        #"Expected transaction(1 - fraud, 0 - not fraud)":y_test
+    }
+
+
 
