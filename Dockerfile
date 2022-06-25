@@ -1,6 +1,9 @@
 FROM debian:latest
 RUN apt-get update && apt-get install python3-pip -y
 RUN pip install requirements.txt
-COPY tests_fraud.py /./tests_fraud.py
+COPY api.py /./api.py
+COPY pipelines.py /./pipelines.py
 WORKDIR /.
-CMD python3 /./tests_fraud.py
+
+EXPOSE 8000
+CMD CMD uvicorn api:api --host 0.0.0.0
