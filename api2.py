@@ -158,8 +158,6 @@ def predictions1(fraud:FraudDetection):
         "Predicted transaction(1 - fraud, 0 - not fraud)":prediction.tolist()
     }
 
-
-
 @api.post("/predict2",tags=['Support vector machines'])
 def predictions2(fraud:FraudDetection):
     """
@@ -216,8 +214,6 @@ def predictions3(fraud:FraudDetection):
         "Predicted transaction(1 - fraud, 0 - not fraud)":prediction.tolist()
     }
 
-
-
 @api.post("/predict4",tags=['K Nearest Neighbors Classifier'])
 def predictions4(fraud:FraudDetection):
     """
@@ -246,52 +242,4 @@ def predictions4(fraud:FraudDetection):
         "Predicted transaction(1 - fraud, 0 - not fraud)":prediction.tolist()
     }
 
-
-
-
-class FraudDetection333(BaseModel):
-    """
-    Input features validation for the ML model
-    """
-    user_id: int
-    signup_day: int
-    signup_month: int
-    signup_year: int
-    purchase_day: int
-    purchase_month: int
-    purchase_year: int
-    purchase_value: float
-    source: str
-    browser: str
-    sex: str
-    age: int
-
-@api.post("/predictions_test",tags=['Logistic'])
-def predictions_test(fraud:FraudDetection333):
-    """
-    :param:input data from the post request
-    :return predicted type
-    """
-    features = [[
-    fraud.user_id,
-    fraud.signup_day,
-    fraud.signup_month,
-    fraud.signup_year,
-    fraud.purchase_day,
-    fraud.purchase_month,
-    fraud.purchase_year,
-    fraud.purchase_value,
-    fraud.source,
-    fraud.browser,
-    fraud.sex,
-    fraud.age
-    ]]
-    log_model = joblib.load('./log_model.pkl')
-    new = (pd.DataFrame(featuress, index = ['0'], columns = ['user_id','signup_day', 'signup_month', 'signup_year', 
-        'purchase_day', 'purchase_month', 'purchase_year','purchase_value',
-        'source','browser','sex','age']))
-    prediction = rf_model.predict(new)
-    return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction.tolist()
-    }
 
