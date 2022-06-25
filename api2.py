@@ -155,8 +155,9 @@ def predictions1(fraud:FraudDetection):
         'purchase_day', 'purchase_month', 'purchase_year','purchase_value', 'source','browser','sex','age']))     
     prediction = log_model.predict(new_case)
     return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction.tolist()
     }
+
 
 
 @api.post("/predict2",tags=['Support vector machines'])
@@ -184,7 +185,7 @@ def predictions2(fraud:FraudDetection):
         'purchase_day', 'purchase_month', 'purchase_year','purchase_value', 'source','browser','sex','age']))     
     prediction = svm_model.predict(new_case)
     return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction.tolist()
     }
 
 @api.post("/predict3",tags=['Decision tree'])
@@ -212,7 +213,7 @@ def predictions3(fraud:FraudDetection):
         'purchase_day', 'purchase_month', 'purchase_year','purchase_value', 'source','browser','sex','age']))     
     prediction = tree_model.predict(new_case)
     return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction.tolist()
     }
 
 
@@ -242,7 +243,7 @@ def predictions4(fraud:FraudDetection):
         'purchase_day', 'purchase_month', 'purchase_year','purchase_value', 'source','browser','sex','age']))     
     prediction = knc_model.predict(new_case)
     return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction.tolist()
     }
 
 
@@ -286,53 +287,11 @@ def predictions_test(fraud:FraudDetection333):
     fraud.age
     ]]
     log_model = joblib.load('./log_model.pkl')
-    new_case = (pd.DataFrame(features, index = ['0'], columns = ['user_id','signup_day', 'signup_month', 'signup_year', 
-        'purchase_day', 'purchase_month', 'purchase_year','purchase_value', 'source','browser','sex','age']))     
-    prediction = log_model.predict(new_case)
-    return {
-        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction
-    }
-
-
-featuress={
-  "user_id": 22058,
-  "signup_day": 24,
-  "signup_month": 2,
-  "signup_year": 2015,
-  "purchase_day": 18,
-  "purchase_month": 4,
-  "purchase_year": 2015,
-  "purchase_value": 34,
-  "source": "SEO",
-  "browser": "Chrome",
-  "sex": "M",
-  "age": 39
-}
-rf_model = joblib.load('./rf_model.pkl')
-new = (pd.DataFrame(featuress, index = ['0'], columns = ['user_id','signup_day', 'signup_month', 'signup_year', 
+    new = (pd.DataFrame(featuress, index = ['0'], columns = ['user_id','signup_day', 'signup_month', 'signup_year', 
         'purchase_day', 'purchase_month', 'purchase_year','purchase_value',
         'source','browser','sex','age']))
-new_prediction = rf_model.predict(new)
-print(new)
-print(new_prediction)
-
-featuress2={
-  "user_id": 1359,
-  "signup_day": 1,
-  "signup_month": 1,
-  "signup_year": 2015,
-  "purchase_day": 1,
-  "purchase_month": 1,
-  "purchase_year": 2015,
-  "purchase_value": 15,
-  "source": "SEO",
-  "browser": "Opera",
-  "sex": "M",
-  "age": 53
-}
-rf_model = joblib.load('./rf_model.pkl')
-new = (pd.DataFrame(featuress2, index = ['0']))
-new_prediction = rf_model.predict(new)
-print(new)
-print(new_prediction)
+    prediction = rf_model.predict(new)
+    return {
+        "Predicted transaction(1 - fraud, 0 - not fraud)":prediction.tolist()
+    }
 
