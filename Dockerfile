@@ -6,4 +6,4 @@ COPY pipelines.py /./pipelines.py
 WORKDIR /.
 
 EXPOSE 8000
-CMD CMD uvicorn api:api --host 0.0.0.0
+CMD uvicorn api:api --host 0.0.0.0
