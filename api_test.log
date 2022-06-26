@@ -1,0 +1,49 @@
+
+    ========================================================
+        Performances test for logistic regression
+    ========================================================
+
+    request done at "/log"
+
+    expected result = 200
+    actual result = 200
+
+    ==>  SUCCESS
+
+    
+    ========================================================
+        Performances test for support vector machines
+    ========================================================
+
+    request done at "/svm"
+
+    expected result = 200
+    actual result = 200
+
+    ==>  SUCCESS
+
+    
+    ========================================================
+        Performances test for decision tree classifier
+    ========================================================
+
+    request done at "/tree"
+
+    expected result = 200
+    actual result = 200
+
+    ==>  SUCCESS
+
+    
+    ========================================================
+        Performances test for K Nearest Neighbors Classifier
+    ========================================================
+
+    request done at "/knc"
+
+    expected result = 200
+    actual result = 200
+
+    ==>  SUCCESS
+
+    
