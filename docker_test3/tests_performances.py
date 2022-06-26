@@ -44,11 +44,3 @@ def test_performances(endpoint,model_name):
     #assertion pytest
     assert(status_code == 200)
 
-
-
-'''
-test_performances('log', 'logistic regression')
-test_performances('svm', 'support vector machines')
-test_performances('tree', 'decision tree classifier')
-test_performances('knc', 'K Nearest Neighbors Classifier')
-'''
