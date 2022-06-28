@@ -1,233 +1,282 @@
 import os
 import requests
 
+data_fraud= {  
+    "user_id": 1359,
+    "signup_day": 1,
+    "signup_month": 1,
+    "signup_year": 2015,
+    "purchase_day": 1,
+    "purchase_month": 1,
+    "purchase_year": 2015,
+    "purchase_value": 15,
+    "source": "SEO",
+    "browser": "Opera",
+    "sex": "M",
+    "age": 53
+    }
+
 # définition de l'adresse de l'API
 api_address = '127.0.0.1'
 # port de l'API
 api_port = 8000
 
-url1='http://{address}:{port}/predict1'.format(address=api_address, port=api_port)
 
-data_fraud= {  
-  "user_id": 1359,
-  "signup_day": 1,
-  "signup_month": 1,
-  "signup_year": 2015,
-  "purchase_day": 1,
-  "purchase_month": 1,
-  "purchase_year": 2015,
-  "purchase_value": 15,
-  "source": "SEO",
-  "browser": "Opera",
-  "sex": "M",
-  "age": 53
-}
+def test_fraud_log():
+    
+    url1='http://{address}:{port}/predict1'.format(address=api_address, port=api_port)
 
-r = requests.post(url1, json=data_fraud)
+    
 
-output = '''
-========================================================
-    Fraud prediction test for logistic regression
-========================================================
+    r = requests.post(url1, json=data_fraud)
 
-request done at "/predict1"
+    output = '''
+    =============================================================
+        Fraud prediction test status code for logistic regression
+    =============================================================
 
-expected result = 200
-actual result = {status_code}
+    request done at "/predict1"
 
-==>  {test_status}
+    expected result = 200
+    actual result = {status_code}
 
-'''
-# statut de la requête
-status_code = r.status_code
+    ==>  {test_status}
 
-# affichage des résultats
-if status_code == 200:
-    test_status = 'SUCCESS'
-else:
-    test_status = 'FAILURE'
-print(output.format(status_code=status_code, test_status=test_status))
+    '''
+    # statut de la requête
+    status_code = r.status_code
 
+    # affichage des résultats
+    if status_code == 200:
+        test_status = 'SUCCESS'
+    else:
+        test_status = 'FAILURE'
 
-output = '''
-========================================================
-    Fraud prediction test for logistic regression
-========================================================
+    output = output.format(status_code=status_code, test_status=test_status)
+    print(output)
 
-request done at "/predict1"
+    with open('../api_test.log', 'a') as file:
+        file.write(output)
 
-expected result = [1]
-actual result = {value}
+    output = '''
+    ========================================================
+        Fraud prediction test target for logistic regression
+    ========================================================
 
-==>  {test_status}
+    request done at "/predict1"
 
-'''
-# valeur target
-data = r.json()
-value = data['Predicted transaction(1 - fraud, 0 - not fraud)']
+    expected result = [1]
+    actual result = {value}
 
-# affichage des résultats
-if value == [1]:
-    test_status = 'SUCCESS'
-else:
-    test_status = 'FAILURE'
-print(output.format(value=value, test_status=test_status))
+    ==>  {test_status}
 
+    '''
+    # valeur target
+    data = r.json()
+    value = data['Predicted transaction(1 - fraud, 0 - not fraud)']
 
+    # affichage des résultats
+    if value == [1]:
+        test_status = 'SUCCESS'
+    else:
+        test_status = 'FAILURE'
+    
+    output = output.format(value=value, test_status=test_status)
+    print(output)
 
+    with open('../api_test.log', 'a') as file:
+        file.write(output)
+    
+    assert(status_code == 200)
+    assert(value == [1])
 
-url2='http://{address}:{port}/predict2'.format(address=api_address, port=api_port)
+def test_fraud_svm():
+    url2='http://{address}:{port}/predict2'.format(address=api_address, port=api_port)
 
-r = requests.post(url2, json=data_fraud)
+    r = requests.post(url2, json=data_fraud)
 
-output = '''
-=============================================================
-     Fraud prediction test for support vector machines
-=============================================================
+    output = '''
+    =================================================================
+        Fraud prediction test status code for support vector machines
+    =================================================================
 
-request done at "/predict2"
+    request done at "/predict2"
 
-expected result = 200
-actual result = {status_code}
+    expected result = 200
+    actual result = {status_code}
 
-==>  {test_status}
+    ==>  {test_status}
 
-'''
-# statut de la requête
-status_code = r.status_code
+    '''
+    # statut de la requête
+    status_code = r.status_code
 
-# affichage des résultats
-if status_code == 200:
-    test_status = 'SUCCESS'
-else:
-    test_status = 'FAILURE'
-print(output.format(status_code=status_code, test_status=test_status))
+    # affichage des résultats
+    if status_code == 200:
+        test_status = 'SUCCESS'
+    else:
+        test_status = 'FAILURE'
 
-url3='http://{address}:{port}/predict3'.format(address=api_address, port=api_port)
-
-
-output = '''
-========================================================
-    Fraud prediction test for support vector machines
-========================================================
-
-request done at "/predict2"
-
-expected result = [1]
-actual result = {value}
-
-==>  {test_status}
-
-'''
-# valeur target
-data = r.json()
-value = data['Predicted transaction(1 - fraud, 0 - not fraud)']
-
-# affichage des résultats
-if value == [1]:
-    test_status = 'SUCCESS'
-else:
-    test_status = 'FAILURE'
-print(output.format(value=value, test_status=test_status))
-
-r = requests.post(url3, json=data_fraud)
-
-output = '''
-=============================================================
-     Fraud prediction test for decision tree classifier
-=============================================================
-
-request done at "/predict3"
-
-expected result = 200
-actual result = {status_code}
-
-==>  {test_status}
-
-'''
-# statut de la requête
-status_code = r.status_code
-
-# affichage des résultats
-if status_code == 200:
-    test_status = 'SUCCESS'
-else:
-    test_status = 'FAILURE'
-print(output.format(status_code=status_code, test_status=test_status))
-
-output = '''
-========================================================
-    Fraud prediction test for decision tree classifier
-========================================================
-
-request done at "/predict3"
-
-expected result = [1]
-actual result = {value}
-
-==>  {test_status}
-
-'''
-# valeur target
-data = r.json()
-value = data['Predicted transaction(1 - fraud, 0 - not fraud)']
-
-# affichage des résultats
-if value == [1]:
-    test_status = 'SUCCESS'
-else:
-    test_status = 'FAILURE'
-print(output.format(value=value, test_status=test_status))
+    output = output.format(status_code=status_code, test_status=test_status)
+    print(output)
 
 
-url4='http://{address}:{port}/predict4'.format(address=api_address, port=api_port)
+    with open('../api_test.log', 'a') as file:
+        file.write(output)
 
-r = requests.post(url4, json=data_fraud)
+    output = '''
+    =============================================================
+        Fraud prediction test target for support vector machines
+    =============================================================
 
-output = '''
-==================================================================
-     Fraud prediction test for K Nearest Neighbors Classifier
-==================================================================
+    request done at "/predict2"
 
-request done at "/predict4"
+    expected result = [1]
+    actual result = {value}
 
-expected result = 200
-actual result = {status_code}
+    ==>  {test_status}
 
-==>  {test_status}
+    '''
+    # valeur target
+    data = r.json()
+    value = data['Predicted transaction(1 - fraud, 0 - not fraud)']
 
-'''
-# statut de la requête
-status_code = r.status_code
+    # affichage des résultats
+    if value == [1]:
+        test_status = 'SUCCESS'
+    else:
+        test_status = 'FAILURE'
+    output = output.format(value=value, test_status=test_status)
+    print(output)
+    with open('../api_test.log', 'a') as file:
+        file.write(output)
 
-# affichage des résultats
-if status_code == 200:
-    test_status = 'SUCCESS'
-else:
-    test_status = 'FAILURE'
-print(output.format(status_code=status_code, test_status=test_status))
+    assert(status_code == 200)
+    assert(value == [1])
 
+def test_fraud_tree():
 
-output = '''
-========================================================
-    Fraud prediction test for K Nearest Neighbors Classifier
-========================================================
+    url3='http://{address}:{port}/predict3'.format(address=api_address, port=api_port)
 
-request done at "/predict4"
+    r = requests.post(url3, json=data_fraud)
 
-expected result = [1]
-actual result = {value}
+    output = '''
+    =============================================================
+        Fraud prediction test for decision tree classifier
+    =============================================================
 
-==>  {test_status}
+    request done at "/predict3"
 
-'''
-# valeur target
-data = r.json()
-value = data['Predicted transaction(1 - fraud, 0 - not fraud)']
+    expected result = 200
+    actual result = {status_code}
 
-# affichage des résultats
-if value == [1]:
-    test_status = 'SUCCESS'
-else:
-    test_status = 'FAILURE'
-print(output.format(value=value, test_status=test_status))
+    ==>  {test_status}
+
+    '''
+    # statut de la requête
+    status_code = r.status_code
+
+    # affichage des résultats
+    if status_code == 200:
+        test_status = 'SUCCESS'
+    else:
+        test_status = 'FAILURE'
+
+    output = output.format(status_code=status_code, test_status=test_status)
+    print(output)
+    with open('../api_test.log', 'a') as file:
+        file.write(output)
+
+    output = '''
+    ========================================================
+        Fraud prediction test for decision tree classifier
+    ========================================================
+
+    request done at "/predict3"
+
+    expected result = [1]
+    actual result = {value}
+
+    ==>  {test_status}
+
+    '''
+    # valeur target
+    data = r.json()
+    value = data['Predicted transaction(1 - fraud, 0 - not fraud)']
+
+    # affichage des résultats
+    if value == [1]:
+        test_status = 'SUCCESS'
+    else:
+        test_status = 'FAILURE'
+
+    output = output.format(value=value, test_status=test_status)
+    print(output)
+    with open('../api_test.log', 'a') as file:
+        file.write(output)
+
+    assert(status_code == 200)
+    assert(value == [1])
+
+def test_fraud_knn():
+
+    url4='http://{address}:{port}/predict4'.format(address=api_address, port=api_port)
+
+    r = requests.post(url4, json=data_fraud)
+
+    output = '''
+    ==================================================================
+        Fraud prediction test for K Nearest Neighbors Classifier
+    ==================================================================
+
+    request done at "/predict4"
+
+    expected result = 200
+    actual result = {status_code}
+
+    ==>  {test_status}
+
+    '''
+    # statut de la requête
+    status_code = r.status_code
+
+    # affichage des résultats
+    if status_code == 200:
+        test_status = 'SUCCESS'
+    else:
+        test_status = 'FAILURE'
+    output = output.format(status_code=status_code, test_status=test_status)
+    print(output)
+    with open('../api_test.log', 'a') as file:
+        file.write(output)
+
+    output = '''
+    ========================================================
+        Fraud prediction test for K Nearest Neighbors Classifier
+    ========================================================
+
+    request done at "/predict4"
+
+    expected result = [1]
+    actual result = {value}
+
+    ==>  {test_status}
+
+    '''
+    # valeur target
+    data = r.json()
+    value = data['Predicted transaction(1 - fraud, 0 - not fraud)']
+
+    # affichage des résultats
+    if value == [1]:
+        test_status = 'SUCCESS'
+    else:
+        test_status = 'FAILURE'
+    output = output.format(value=value, test_status=test_status)
+    print(output)
+    with open('../api_test.log', 'a') as file:
+        file.write(output)
+    
+    assert(status_code == 200)
+    assert(value == [1])
+    
