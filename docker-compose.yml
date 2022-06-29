@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  api:
+    image: anastasiatoullec/image_pipeline_fraud:latest
+    container_name: api_container
+    networks:
+      - net
+    ports:
+      - target: 8000
+        published: 8000
+        protocol: tcp
+        mode: host
+  transactions_fraud:
+    image: image_tests_fraud:latest
+    container_name: container_tests_fraud
+    depends_on:
+      - api
+    networks:
+      - net
+    volumes:
+      - .:/./docker_test1
+    healthcheck:
+      test: curl --fail -s http://localhost:8000/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  transactions_not_fraud:
+      image: image_tests_not_fraud:latest
+      container_name: container_tests_not_fraud
+      depends_on:
+        - api
+      networks:
+        - net
+      volumes:
+        - .:/./docker_test2
+      healthcheck:
+        test: curl --fail -s http://localhost:8000/ || exit 1
+        interval: 30s
+        timeout: 10s
+        retries: 3
+  performances:
+      image: image_tests_performances:latest
+      container_name: container_tests_performances
+      depends_on:
+        - api
+      networks:
+        - net
+      volumes:
+        - .:/./docker_test3
+      healthcheck:
+        test: curl --fail -s http://localhost:8000/ || exit 1
+        interval: 30s
+        timeout: 10s
+        retries: 3
+networks:
+  net:

@@ -2,7 +2,7 @@ import os
 import requests
 
 # définition de l'adresse de l'API
-api_address = '127.0.0.1'
+api_address = 'api_container'
 # port de l'API
 api_port = 8000
 
