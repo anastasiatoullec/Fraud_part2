@@ -1,0 +1,10 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fraud-analysis-ingress
+spec:
+  defaultBackend:
+    service:
+      name: fraud-analysis-service
+      port:
+        number: 8001

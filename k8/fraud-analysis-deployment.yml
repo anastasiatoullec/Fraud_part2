@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-analysis-deployment
+  labels:
+    app: fraud-analysis-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fraud-analysis-api
+  template:
+    metadata:
+      labels:
+        app: fraud-analysis-api
+    spec:
+      containers:
+      - name: api-container
+        image: anastasiatoullec/image_pipeline_fraud:latest
+        ports:
+        - containerPort: 8000
+
