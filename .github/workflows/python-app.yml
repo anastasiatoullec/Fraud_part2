@@ -20,7 +20,7 @@ jobs:
         python-version: "3.10"
     - name: Install dependencies
       run: |
-        pip install -r req_tests.txt
+        pip install -r requirements.txt
     - name: Run API
       run: |
         uvicorn api:api &
