@@ -1,11 +1,14 @@
 import os
 import requests
 import pytest
+import time
 
 # définition de l'adresse de l'API
 api_address = 'api_container'
 # port de l'API
 api_port = 8000
+
+time.sleep(6)
 
 @pytest.mark.parametrize("endpoint,model_name", [('log','logistic regression'), ('svm', 'support vector machines'),('tree', 'decision tree classifier'), ('knc', 'K Nearest Neighbors Classifier')])
 def test_performances(endpoint,model_name):

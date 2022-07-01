@@ -1,5 +1,6 @@
 import os
 import requests
+import time
 
 # définition de l'adresse de l'API
 api_address = 'api_container'
@@ -20,6 +21,8 @@ data_not_fraud= {
   "sex": "M",
   "age": 39
 }
+
+time.sleep(5)
 
 def test_not_fraud_log():
 

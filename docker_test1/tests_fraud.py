@@ -1,5 +1,6 @@
 import os
 import requests
+import time
 
 data_fraud= {  
     "user_id": 1359,
@@ -21,6 +22,7 @@ api_address = 'api_container'
 # port de l'API
 api_port = 8000
 
+time.sleep(5)
 
 def test_fraud_log():
     
