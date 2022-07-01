@@ -29,6 +29,7 @@ services:
       container_name: container_tests_not_fraud
       depends_on:
         - api
+        - transactions_fraud
       networks:
         - net
       volumes:
@@ -43,6 +44,7 @@ services:
       container_name: container_tests_performances
       depends_on:
         - api
+        - transactions_not_fraud
       networks:
         - net
       volumes:
